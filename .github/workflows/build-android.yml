@@ -13,7 +13,7 @@ jobs:
     env:
       appName: k-9
       tagName: '6.400'
-      targetApkName: k-9-${{ github.ref_name }}.zip
+      targetZip: k-9-${{ github.ref_name }}.zip
     steps:
       - name: git clone
         shell: cmd
@@ -66,14 +66,28 @@ jobs:
       - name: Build with Gradle
         run: cd k-9 && chmod  777 ./gradlew && ./gradlew --no-daemon assembleDebug
 
-      - name: Upload APKs to Release
-        uses: svenstaro/upload-release-action@v2
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./k-9/app/build/outputs/apk/debug/*.apk
-          tag: ${{ env.targetApkName }}
-          overwrite: true
-          file_glob: true
+          type: 'zip'
+          directory: "k-9"
+          filename: "${{ env.targetZip }}"
+
+      - name: Release prebuilt
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "k-9/${{ env.targetZip }}"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+  #   - name: Upload APKs to Release
+  #     uses: svenstaro/upload-release-action@v2
+  #     with:
+  #       repo_token: ${{ secrets.GITHUB_TOKEN }}
+  #       file: ./k-9/app/build/outputs/apk/debug/*.apk
+  #       tag: 
+  #         overwrite: true
+  #         file_glob: true
   #         body: |
   #           Changelog since last release:
   #           ```
