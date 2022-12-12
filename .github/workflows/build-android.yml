@@ -70,13 +70,14 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "k-9"
+          path: 'k9mail-debug.apk'
+          directory: "k-9/app/k9mail/build/outputs/apk/debug"
           filename: "${{ env.targetZip }}"
 
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "k-9/${{ env.targetZip }}"
+          artifacts: "k-9/app/k9mail/build/outputs/apk/debug/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
           
